@@ -1,0 +1,237 @@
+/* ══════════════════════════════════════
+   OUR STORY — WHY GROW N GLOW
+══════════════════════════════════════ */
+.story-section {
+  padding: 100px 0;
+  background: var(--white);
+  overflow: hidden;
+}
+
+.story-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 72px;
+}
+
+/* ── Content ── */
+.story-content {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.8s ease 0.1s, transform 0.8s ease 0.1s;
+}
+
+.story-section.visible .story-content {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.story-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+
+.story-title .highlight { color: var(--green-primary); }
+
+.story-text {
+  font-size: 0.96rem;
+  color: var(--text-medium);
+  line-height: 1.85;
+  margin-bottom: 16px;
+}
+
+.story-text strong { color: var(--green-accent); font-weight: 700; }
+.story-text em     { color: #c0392b; font-style: italic; font-weight: 600; }
+
+/* Milestones */
+.story-milestones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 28px 0 32px;
+}
+
+.milestone {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: var(--green-light);
+  border-left: 3px solid var(--green-primary);
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+  flex: 1;
+  min-width: 145px;
+}
+
+.milestone:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-sm);
+}
+
+.milestone-icon { font-size: 1.3rem; }
+
+.milestone div {
+  display: flex;
+  flex-direction: column;
+}
+
+.milestone strong {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+.milestone span {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+/* CTA */
+.story-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--green-primary);
+  color: var(--white);
+  padding: 14px 32px;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: var(--transition);
+  box-shadow: 0 4px 18px rgba(122,187,74,0.35);
+}
+
+.story-cta:hover {
+  background: var(--green-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(122,187,74,0.45);
+}
+
+/* ── Visual Side ── */
+.story-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+}
+
+.story-section.visible .story-visual {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Stat cards */
+.story-stat-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.story-stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  border-radius: 18px;
+  text-align: center;
+  gap: 4px;
+  transition: var(--transition);
+}
+
+.story-stat-card:hover { transform: translateY(-4px); }
+
+.card-green {
+  background: var(--green-primary);
+  color: var(--white);
+  box-shadow: 0 8px 28px rgba(122,187,74,0.35);
+}
+
+.card-dark {
+  background: var(--green-dark);
+  color: var(--white);
+  box-shadow: 0 8px 28px rgba(29,58,31,0.3);
+}
+
+.card-outline {
+  background: var(--white);
+  border: 2px solid rgba(122,187,74,0.3);
+  color: var(--text-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+.scard-icon  { font-size: 1.6rem; margin-bottom: 4px; }
+
+.scard-number {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.scard-label { font-size: 0.75rem; opacity: 0.8; font-weight: 500; }
+
+/* Benefits box */
+.story-benefits-box {
+  background: var(--green-dark);
+  border-radius: 20px;
+  padding: 28px 28px 24px;
+  color: var(--white);
+}
+
+.story-benefits-box h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--green-primary);
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.story-benefit-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.story-benefit-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.86rem;
+  color: rgba(255,255,255,0.8);
+}
+
+.story-benefit-list li span { font-size: 1.05rem; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .story-container {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .story-stat-cards {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .story-stat-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .story-benefit-list {
+    grid-template-columns: 1fr;
+  }
+}
