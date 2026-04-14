@@ -60,7 +60,16 @@ export default function Menu() {
   const [activeDay,  setActiveDay]  = useState(0)
   const [cart, setCart] = useState({})
 
-  const handleAdd = (id) => setCart(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }))
+  const handleAdd    = (id) => setCart(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }))
+  const handleRemove = (id) => setCart(prev => {
+    const qty = (prev[id] || 0) - 1
+    if (qty <= 0) {
+      const next = { ...prev }
+      delete next[id]
+      return next
+    }
+    return { ...prev, [id]: qty }
+  })
 
   const totalItems = Object.values(cart).reduce((s, q) => s + q, 0)
   const totalPrice = products.reduce((s, p) => s + (cart[p.id] || 0) * p.priceNum, 0)
@@ -202,23 +211,39 @@ export default function Menu() {
                 <p className="product-tag">{p.tag}</p>
                 <div className="product-footer">
                   <span className="product-price">{p.price}</span>
-                  <button
-                    className={`product-add-btn ${cart[p.id] ? 'product-add-btn--added' : ''}`}
-                    id={`add-${p.id}`}
-                    onClick={() => handleAdd(p.id)}
-                  >
-                    {cart[p.id] ? (
-                      <span className="cart-count">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                        {cart[p.id]} in cart
-                      </span>
-                    ) : (
-                      <span>
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Add to Cart
-                      </span>
-                    )}
-                  </button>
+
+                  {cart[p.id] ? (
+                    /* ── Quantity stepper ── */
+                    <div className="qty-stepper" id={`stepper-${p.id}`}>
+                      <button
+                        className="qty-btn qty-btn--minus"
+                        id={`minus-${p.id}`}
+                        onClick={() => handleRemove(p.id)}
+                        aria-label="Remove one"
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </button>
+                      <span className="qty-count">{cart[p.id]}</span>
+                      <button
+                        className="qty-btn qty-btn--plus"
+                        id={`plus-${p.id}`}
+                        onClick={() => handleAdd(p.id)}
+                        aria-label="Add one more"
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </button>
+                    </div>
+                  ) : (
+                    /* ── Plain Add to Cart ── */
+                    <button
+                      className="product-add-btn"
+                      id={`add-${p.id}`}
+                      onClick={() => handleAdd(p.id)}
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      Add to Cart
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
