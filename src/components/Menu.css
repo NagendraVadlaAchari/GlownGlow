@@ -770,7 +770,7 @@
   background: var(--white);
   border-radius: 24px;
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   box-shadow: 0 32px 80px rgba(0,0,0,0.28);
   overflow: hidden;
   animation: modalSlideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -900,6 +900,45 @@
 
 .omf-required { color: #e74c3c; font-size: 0.9em; }
 
+.omf-optional {
+  color: var(--text-light);
+  font-size: 0.78em;
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* ── Address subsection ── */
+.omf-address-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 14px 16px 16px;
+  background: linear-gradient(135deg, rgba(122,187,74,0.06), rgba(122,187,74,0.02));
+  border: 1.5px solid rgba(122,187,74,0.2);
+  border-radius: 14px;
+}
+
+.omf-address-label {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--green-dark);
+  margin-bottom: 2px;
+}
+
+/* Full-width fields span both columns */
+.omf-address-section .omf-group:not(.omf-group--half) {
+  grid-column: 1 / -1;
+}
+
+/* Half-width fields sit side by side */
+.omf-group--half {
+  grid-column: span 1;
+}
+
 .omf-input {
   width: 100%;
   padding: 11px 14px;
@@ -1005,7 +1044,15 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 520px) {
+@media (max-width: 560px) {
   .order-modal { border-radius: 20px 20px 0 0; }
   .order-modal-overlay { align-items: flex-end; padding: 0; }
+
+  /* Stack half-width address fields on small screens */
+  .omf-address-section {
+    grid-template-columns: 1fr;
+  }
+  .omf-group--half {
+    grid-column: 1 / -1;
+  }
 }

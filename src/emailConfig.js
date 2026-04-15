@@ -17,3 +17,10 @@ export const WEB3FORMS_ACCESS_KEY = '79fdb7e4-c9a2-454a-a6e8-bf030d5f1cd3'
 
 export const EMAIL_TO = 'grownglow2k26@gmail.com'
 export const WHATSAPP_NUMBER = '917396624938'
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Email Order Visibility Toggle
+//  Set to 'Y' → "Email Order" button will be visible on the order modal
+//  Set to 'N' → "Email Order" button is hidden (WhatsApp only)
+// ─────────────────────────────────────────────────────────────────────────────
+export const SHOW_EMAIL_ORDER = 'N'

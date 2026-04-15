@@ -6,7 +6,7 @@ import pomImg   from '../assets/pom_juice.png'
 import melonImg from '../assets/melon_juice.png'
 import pinImg   from '../assets/pineapple_juice.png'
 import './Menu.css'
-import { WEB3FORMS_ACCESS_KEY, WHATSAPP_NUMBER } from '../emailConfig'
+import { WEB3FORMS_ACCESS_KEY, WHATSAPP_NUMBER, SHOW_EMAIL_ORDER } from '../emailConfig'
 
 /* ── Native WhatsApp deep-link — opens desktop/mobile app, NO web redirect ── */
 const openWhatsAppNative = (phone, text) => {
@@ -80,7 +80,7 @@ export default function Menu() {
   /* ── Customer details modal state ── */
   const [showModal,    setShowModal]    = useState(false)
   const [orderChannel, setOrderChannel] = useState(null)   // 'email' | 'whatsapp'
-  const [customer, setCustomer] = useState({ name: '', phone: '', address: '' })
+  const [customer, setCustomer] = useState({ name: '', phone: '', houseNo: '', apartmentName: '', streetArea: '', city: '' })
   const [formErrors, setFormErrors] = useState({})
 
   const openOrderModal = (channel) => {
@@ -96,9 +96,11 @@ export default function Menu() {
 
   const validateForm = () => {
     const errs = {}
-    if (!customer.name.trim())              errs.name    = 'Please enter your name'
-    if (!/^[6-9]\d{9}$/.test(customer.phone.trim())) errs.phone = 'Enter a valid 10-digit mobile number'
-    if (!customer.address.trim())           errs.address = 'Please enter your delivery address'
+    if (!customer.name.trim())                         errs.name        = 'Please enter your name'
+    if (!/^[6-9]\d{9}$/.test(customer.phone.trim()))  errs.phone       = 'Enter a valid 10-digit mobile number'
+    if (!customer.houseNo.trim())                      errs.houseNo     = 'Please enter your house / flat number'
+    if (!customer.streetArea.trim())                   errs.streetArea  = 'Please enter your street / area'
+    if (!customer.city.trim())                         errs.city        = 'Please enter your city'
     setFormErrors(errs)
     return Object.keys(errs).length === 0
   }
@@ -110,12 +112,25 @@ export default function Menu() {
       .map(p => `• ${p.name} x${cart[p.id]} = ₹${cart[p.id] * p.priceNum}`)
       .join('\n')
 
+  const buildFullAddress = () => {
+    const parts = [
+      customer.houseNo,
+      customer.apartmentName,
+      customer.streetArea,
+      customer.city,
+    ].filter(Boolean)
+    return parts.join(', ')
+  }
+
   const buildCartBody = () =>
     `CUSTOMER DETAILS\n` +
     `========================================\n` +
-    `Name    : ${customer.name}\n` +
-    `Mobile  : ${customer.phone}\n` +
-    `Address : ${customer.address}\n` +
+    `Name          : ${customer.name}\n` +
+    `Mobile        : ${customer.phone}\n` +
+    `House / Flat  : ${customer.houseNo}\n` +
+    `Apartment     : ${customer.apartmentName || '-'}\n` +
+    `Street / Area : ${customer.streetArea}\n` +
+    `City          : ${customer.city}\n` +
     `========================================\n\n` +
     `ORDER SUMMARY\n` +
     `========================================\n` +
@@ -166,9 +181,12 @@ export default function Menu() {
       const text =
         `🛒 *New Order — Grow n Glow*\n\n` +
         `*👤 Customer Details*\n` +
-        `• Name    : ${customer.name}\n` +
-        `• Mobile  : ${customer.phone}\n` +
-        `• Address : ${customer.address}\n\n` +
+        `• Name          : ${customer.name}\n` +
+        `• Mobile        : ${customer.phone}\n` +
+        `• House / Flat  : ${customer.houseNo}\n` +
+        (customer.apartmentName ? `• Apartment     : ${customer.apartmentName}\n` : '') +
+        `• Street / Area : ${customer.streetArea}\n` +
+        `• City          : ${customer.city}\n\n` +
         `*🛍️ Order Items*\n` +
         buildCartLines() +
         `\n\n*TOTAL (${totalItems} item${totalItems > 1 ? 's' : ''}): ₹${totalPrice}*\n\nPlease confirm this order.`
@@ -192,17 +210,19 @@ export default function Menu() {
             </div>
           ) : (
             <>
-              <button className="cart-float-btn" id="cart-email-btn" onClick={() => openOrderModal('email')} title="Send order via Email" disabled={emailLoading}>
-                {emailLoading ? (
-                  <span className="cart-email-spinner" />
-                ) : (
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-                  </svg>
-                )}
-                {emailLoading ? 'Sending…' : 'Email Order'}
-                {!emailLoading && <span className="cart-float-badge">{totalItems}</span>}
-              </button>
+              {SHOW_EMAIL_ORDER === 'Y' && (
+                <button className="cart-float-btn" id="cart-email-btn" onClick={() => openOrderModal('email')} title="Send order via Email" disabled={emailLoading}>
+                  {emailLoading ? (
+                    <span className="cart-email-spinner" />
+                  ) : (
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                  )}
+                  {emailLoading ? 'Sending…' : 'Email Order'}
+                  {!emailLoading && <span className="cart-float-badge">{totalItems}</span>}
+                </button>
+              )}
               <button className="cart-float-btn cart-float-btn--wa" id="cart-whatsapp-btn" onClick={() => openOrderModal('whatsapp')} title="Send order via WhatsApp">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
@@ -505,21 +525,79 @@ export default function Menu() {
                 {formErrors.phone && <span className="omf-error">{formErrors.phone}</span>}
               </div>
 
-              {/* Address */}
-              <div className={`omf-group ${formErrors.address ? 'omf-group--error' : ''}`}>
-                <label className="omf-label" htmlFor="om-address">
+              {/* Delivery Address — 4 separate fields */}
+              <div className="omf-address-section">
+                <div className="omf-address-label">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  Delivery Address <span className="omf-required">*</span>
-                </label>
-                <textarea
-                  id="om-address"
-                  className="omf-input omf-textarea"
-                  placeholder="House no., Street, Area, City — Pincode"
-                  rows={3}
-                  value={customer.address}
-                  onChange={e => setCustomer(c => ({ ...c, address: e.target.value }))}
-                />
-                {formErrors.address && <span className="omf-error">{formErrors.address}</span>}
+                  Delivery Address
+                </div>
+
+                {/* House No */}
+                <div className={`omf-group omf-group--half ${formErrors.houseNo ? 'omf-group--error' : ''}`}>
+                  <label className="omf-label" htmlFor="om-houseno">
+                    House / Flat No. <span className="omf-required">*</span>
+                  </label>
+                  <input
+                    id="om-houseno"
+                    type="text"
+                    className="omf-input"
+                    placeholder="e.g. 12B, Flat 301"
+                    value={customer.houseNo}
+                    onChange={e => setCustomer(c => ({ ...c, houseNo: e.target.value }))}
+                    onKeyDown={e => e.key === 'Enter' && document.getElementById('om-apartment').focus()}
+                  />
+                  {formErrors.houseNo && <span className="omf-error">{formErrors.houseNo}</span>}
+                </div>
+
+                {/* Apartment Name */}
+                <div className="omf-group omf-group--half">
+                  <label className="omf-label" htmlFor="om-apartment">
+                    Apartment Name <span className="omf-optional">(optional)</span>
+                  </label>
+                  <input
+                    id="om-apartment"
+                    type="text"
+                    className="omf-input"
+                    placeholder="e.g. Sai Residency"
+                    value={customer.apartmentName}
+                    onChange={e => setCustomer(c => ({ ...c, apartmentName: e.target.value }))}
+                    onKeyDown={e => e.key === 'Enter' && document.getElementById('om-street').focus()}
+                  />
+                </div>
+
+                {/* Street / Area */}
+                <div className={`omf-group ${formErrors.streetArea ? 'omf-group--error' : ''}`}>
+                  <label className="omf-label" htmlFor="om-street">
+                    Street / Area <span className="omf-required">*</span>
+                  </label>
+                  <input
+                    id="om-street"
+                    type="text"
+                    className="omf-input"
+                    placeholder="e.g. MG Road, Banjara Hills"
+                    value={customer.streetArea}
+                    onChange={e => setCustomer(c => ({ ...c, streetArea: e.target.value }))}
+                    onKeyDown={e => e.key === 'Enter' && document.getElementById('om-city').focus()}
+                  />
+                  {formErrors.streetArea && <span className="omf-error">{formErrors.streetArea}</span>}
+                </div>
+
+                {/* City */}
+                <div className={`omf-group omf-group--half ${formErrors.city ? 'omf-group--error' : ''}`}>
+                  <label className="omf-label" htmlFor="om-city">
+                    City <span className="omf-required">*</span>
+                  </label>
+                  <input
+                    id="om-city"
+                    type="text"
+                    className="omf-input"
+                    placeholder="e.g. Hyderabad"
+                    value={customer.city}
+                    onChange={e => setCustomer(c => ({ ...c, city: e.target.value }))}
+                    onKeyDown={e => e.key === 'Enter' && document.getElementById('om-submit-btn').focus()}
+                  />
+                  {formErrors.city && <span className="omf-error">{formErrors.city}</span>}
+                </div>
               </div>
 
             </div>
